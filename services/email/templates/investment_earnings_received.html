@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1"> <!-- So that mobile will display zoomed in -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"> <!-- enable media queries for windows phone 8 -->
+    <meta name="format-detection" content="telephone=no"> <!-- disable auto telephone linking in iOS -->
+    <meta name="format-detection" content="date=no"> <!-- disable auto date linking in iOS -->
+    <meta name="format-detection" content="address=no"> <!-- disable auto address linking in iOS -->
+    <meta name="format-detection" content="email=no"> <!-- disable auto email linking in iOS -->
+
+    <style>
+        body {
+            margin: 0px !important;
+            padding: 0px !important;
+            display: block !important;
+            min-width: 100% !important;
+            width: 100% !important;
+            -webkit-text-size-adjust: none;
+            font-family: Arial, sans-serif;
+            background-color: #F4F4F4;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 100%;
+            background-color: #F4F4F4;
+        }
+
+        .email-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            /*border-radius: 0px;*/
+            /*box-shadow: 0 0 10 px rgba(0, 0, 0, 0.1);*/
+        }
+
+        .content {
+            padding: 30px 20px;
+            padding-bottom: 5px;
+            /*box-shadow: 0 0 10 px rgba(0, 0, 0, 0.1);*/
+        }
+
+        .header {
+            display: block;
+            margin-bottom: 40px;
+        }
+
+        .header img {
+            display: block;
+            width: 100%;
+            max-width: 100px;
+        }
+
+        .footer {
+            padding: 10px 20px;
+            background-color: #19C3E4;
+        }
+
+        .footer p {
+            color: #ffffff;
+            text-align: center;
+            font-family: 'Roboto', Arial, Helvetica, sans-serif;
+            font-size: 15px;
+            line-height: 19px
+        }
+
+        .footer h3 {
+            color: #ffffff;
+            text-align: center;
+            font-family: 'Josefin Sans', Arial, Helvetica, sans-serif;
+            font-size: 25px;
+            font-weight: 400;
+            margin-bottom: 0;
+        }
+
+
+        h2 {
+            color: #333;
+        }
+
+        p {
+            color: #313131;
+            font-size: 17px;
+        }
+
+        .code {
+            background-color: #F4F4F4;
+            color: #333;
+            font-size: 25px;
+            font-weight: 400;
+            text-align: center;
+            display: block;
+            width: 150px;
+            padding: 10px;
+        }
+
+        .details p {
+            margin-bottom: 8px !important;
+            margin-top: 0px !important;
+        }
+
+        .button {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #19C3E4;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="email-container">
+        <div class="content">
+
+            <div class="header">
+                <img src="https://www.poseidondigitalassets.io/img/logo/poseidon-logo-text.png" alt="">
+            </div>
+
+            <p>Dear <%= name %>,</p>
+            <p> Your earnings of <%= amount %> have been successfully credited to your account.</p>
+
+
+            <h4
+             style="margin-bottom: 0px"
+            >Earnings Details:</h4>
+
+            <div class="details">
+                <ul>
+                    <li><b>Interest Earned:</b> <%= amount %></li>
+                    <li><b>Plan:</b> <%= plan %></li>
+                    <li><b>Transaction ID:</b> <%= id %></li>
+                </ul>
+            </div>
+
+            <p>You may log in to access your earnings history or track your active OTPs at your convenience.</p>
+
+            <!--<p style="margin-top: 35px; font-size: 15px;"
+            >If you have any question regarding this email. Please feel free to contact us.</p>-->
+        </div>
+
+        <div class="footer">
+            <h3>Poseidon Digital Assets</h3>
+            <p>Poseidon Digital Assets empowers you to invest and trade in tokenized assets, through the power of
+                blockchain technology.
+                For inquiries kindly reach out to us at  <a style="color: #007aff" href="mailto:support@poseidondigitalassets.com">support@poseidondigitalassets.com</a></p>
+        </div>
+    </div>
+</div>
+</body>
+</html>
