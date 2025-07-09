@@ -8,7 +8,7 @@ const options = {
     autoCreate: false,
     minimize: true, // "minimize" schemas by removing empty objects
     selectPopulatedPaths: true,
-    collection: "notifications"
+    collection: "teams"
 }
 
 const schema = new mongoose.Schema({
