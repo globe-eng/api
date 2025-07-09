@@ -14,6 +14,7 @@ const options = {
 const schema = new mongoose.Schema({
     slug: {type: String, trim: true, required: true, unique: true, index: true},
     name: {type: String, required: true},
+    content: {type: String},
     type: {type: String, required: true},
 },  options);
 

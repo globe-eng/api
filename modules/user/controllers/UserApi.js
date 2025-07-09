@@ -2,10 +2,7 @@
 const User = require("./User");
 
 const UserModel = require('../../user/models/userModel');
-const CommissionModel = require('../../affiliate/models/commissionModel');
-const LeaderHistoryModel = require('../../affiliate/models/leaderHistoryModel');
-const TeamDepositHistoryModel = require('../../affiliate/models/teamDepositHistoryModel');
-const TransactionModel = require('../../transaction/models/transactionModel');
+
 
 // Get getUser
 exports.getUser = async (req, res) => {
@@ -123,10 +120,7 @@ exports.test = async (req, res) => {
             "team_deposit_level_total": 0,
         });
 
-        await CommissionModel.deleteMany()
-        await LeaderHistoryModel.deleteMany()
-        await TeamDepositHistoryModel.deleteMany()
-        await TransactionModel.deleteMany()
+
 
 
         return res.json({

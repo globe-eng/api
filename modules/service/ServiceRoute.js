@@ -1,13 +1,21 @@
 'use strict';
 
-// Authentications
 const authenticate = require('../../middleware/authenticate');
-const team = require('./controllers/ServiceApi');
+const service = require('./controllers/ServiceApi');
 
 
 module.exports = function (router) {
-    //router.get('/api/notifications/:user', authenticate, notification.getNotifications);
-    //router.get('/api/test-notification', notification.test);
+    router.post('/api/service/create-service', authenticate, service.createService);
+    router.put('/api/service/update-service', authenticate, service.updateService);
+    router.delete('/api/service/delete-service', authenticate, service.deleteService);
+    router.get('/api/service/get-service', service.getService);
+    router.get('/api/service/get-services', service.getServices);
+
+    router.get('/api/service/get-service-types', service.getServiceTypes);
+    router.get('/api/service/get-service-type', service.getServiceType);
+    router.post('/api/service/create-service-type', authenticate, service.createServiceType);
+    router.put('/api/service/update-service-type', authenticate, service.updateServiceType);
+    router.delete('/api/service/delete-service-type', authenticate, service.deleteServiceType);
 };
 
 

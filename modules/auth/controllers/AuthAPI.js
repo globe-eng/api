@@ -45,6 +45,35 @@ exports.register = async (req, res) => {
     }
 }
 
+exports.addAdmin = async (req, res) => {
+    try {
+        const errors = {};
+        const body = req.body;
+        const auth = new Auth();
+
+        body.password = auth.generateStrongPassword(8)
+        const login_user = await auth.addAdmin(body);
+
+        return res.json({
+            success: login_user.success,
+            errors: login_user.errors,
+            message: login_user.message,
+            data: {
+                password: body.password,
+                email: body.email,
+            },
+        });
+    } catch (e) {
+        console.log(e)
+        return res.json({
+            success: false,
+            message: 'There was an error, please try again!',
+            error: {},
+            token: null
+        });
+    }
+}
+
 exports.changePassword = async (req, res) => {
     try {
         let errors = {};

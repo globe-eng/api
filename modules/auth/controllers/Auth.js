@@ -116,6 +116,35 @@ class Auth extends User {
         );
     };
 
+    generateStrongPassword(length = 12) {
+        const symbols = "!@#$%^&*()_+-=[]{}|;:,.<>?";
+        const uppercase = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        const lowercase = "abcdefghijklmnopqrstuvwxyz";
+        const digits = "0123456789";
+
+        // Ensure at least 1 character from each required group
+        const getRandom = (chars) => chars[Math.floor(Math.random() * chars.length)];
+
+        let password = [
+            getRandom(symbols),      // 1 symbol
+            getRandom(uppercase),    // 1 uppercase
+            getRandom(digits),       // 1 digit
+            getRandom(lowercase)     // ensure some lowercase
+        ];
+
+        // Fill the rest with a mix of all allowed characters (excluding spaces)
+        const allChars = symbols + uppercase + lowercase + digits;
+        while (password.length < length) {
+            password.push(getRandom(allChars));
+        }
+
+        // Shuffle the password array to make it more random
+        password = password.sort(() => Math.random() - 0.5);
+
+        return password.join('');
+    }
+
+
     //Login
     async login(data = this.props) {
         try {
@@ -205,17 +234,17 @@ class Auth extends User {
 
             const token = await Utils.createToken(this.getUserPayload(createUser));
 
-            if(getUser.ref_by){
+            /*if(getUser.ref_by){
                 Notifications.affiliateNewAffiliatePartner({
                     user: getUser.ref_by,
                     downline_name: `${getUser.first_name} ${getUser.last_name}`,
                 }).then(r=>{}).catch(e=>{})
-            }
+            }*/
 
-            Notifications.welcome({
+           /* Notifications.welcome({
                 slug: getUser.slug,
                 code: confirm_email_code
-            }).then(r=>{}).catch(e=>{})
+            }).then(r=>{}).catch(e=>{})*/
 
             return  {
                 success: true,
@@ -228,6 +257,42 @@ class Auth extends User {
 
         } catch (error) {
             console.log("Auth > Register: ", error)
+            return {
+                success: false,
+                response: "There was an error. Please try again!",
+                message: "There was an error. Please try again!",
+            }
+        }
+    }
+
+     //Add Admin
+    async addAdmin(data = this.props) {
+        try {
+            const errors = {};
+
+            const createUser = await this.createUser(data);
+
+            if(!createUser.success){
+                return createUser
+            }
+
+            const getUser = await this.getUser(createUser);
+
+            const token = await Utils.createToken(this.getUserPayload(createUser));
+
+            return  {
+                success: true,
+                response: '',
+                message: 'Admin added successfully',
+                errors: errors,
+                token: token,
+                data: {
+
+                },
+            };
+
+        } catch (error) {
+            console.log("Auth > AddAdmin: ", error)
             return {
                 success: false,
                 response: "There was an error. Please try again!",

@@ -9,10 +9,10 @@ class Email {
     constructor(props = {}) {
         this.props = props;
         this.defaultSmtpTransport = {
-            host: 'smtp.protonmail.ch',
-            user: 'noreply@poseidondigitalassets.com',
-            pass: '52UNFZTUR1J88RCV',
-            from: '"Poseidon Digital Assets" <noreply@poseidondigitalassets.com>',
+            host: 'mail.globeengineeringgh.com',
+            user: 'noreply@globeengineeringgh.com',
+            pass: 'mBrGp9#u}Pvj',
+            from: '"Globe Engineering GH" <noreply@globeengineeringgh.com>',
         }
     }
 
@@ -76,6 +76,9 @@ class Email {
                 email: data.email,
                 subject: data.subject,
             });
+
+            console.log(result)
+
             return (result?.accepted?.length > 0);
         } catch (e) {
             console.log("Email > sendWelcomeEmail: ", e)

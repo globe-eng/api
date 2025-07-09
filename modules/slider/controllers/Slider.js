@@ -1,10 +1,12 @@
-const Model = require('../models/teamModel');
+const Model = require('../models/sliderModel');
 const Utils = require("../../../lib/Utils")
 const config = require("../../../lib/config");
 const mongoose = require("mongoose");
 const cloudinary = require("../../../lib/cloudinary");
 
-class Team {
+
+class Slider {
+    
     constructor(props = {}) {
         this.props = props;
         this.slug = props.slug;
@@ -46,9 +48,9 @@ class Team {
              });
          }*/
 
-        pipeline.push({
+        /*pipeline.push({
             $sort: {created_at: -1}
-        });
+        });*/
 
         pipeline.push({
             $project: {
@@ -101,9 +103,9 @@ class Team {
             model[field] = data[field]
         }
 
-        const folder = `/team/${model.slug}`
-        if (data?.files?.photo_data) {
-            const file = data.files.photo_data
+        const folder = `/slider/${model.slug}`
+        if (data?.files?.image_data) {
+            const file = data.files.image_data
             const uploadMedia = await cloudinary.upload({
                 folder: folder,
                 media: file.filepath,
@@ -112,13 +114,13 @@ class Team {
 
             if (uploadMedia.success) {
 
-                if(model.photo_key){
-                    await cloudinary.delete(model.photo_key);
+                if(model.image_key){
+                    await cloudinary.delete(model.image_key);
                 }
 
-                model.photo = uploadMedia.link;
-                model.photo_path = uploadMedia.path;
-                model.photo_key = uploadMedia.key;
+                model.image = uploadMedia.link;
+                model.image_path = uploadMedia.path;
+                model.image_key = uploadMedia.key;
             }
         }
 
@@ -130,16 +132,8 @@ class Team {
             data = {...data};
             const errors = {};
 
-            if (Utils.isEmpty(data.first_name)) {
-                errors.first_name = 'First name is required';
-            }
-
-            if (Utils.isEmpty(data.last_name)) {
-                errors.last_name = 'Last name is required';
-            }
-
-            if (Utils.isEmpty(data.role)) {
-                errors.role = 'Role is required';
+            if (Utils.isEmpty(data?.files?.image_data)) {
+                errors.image = 'Image is required';
             }
 
 
@@ -158,9 +152,9 @@ class Team {
 
             newModel.slug = await Utils.createSlug(Model);
 
-            const folder = `/team/${newModel.slug}`
-            if (data?.files?.photo_data) {
-                const file = data.files.photo_data
+            const folder = `/slider/${newModel.slug}`
+            if (data?.files?.image_data) {
+                const file = data.files.image_data
                 const uploadMedia = await cloudinary.upload({
                     folder: folder,
                     media: file.filepath,
@@ -168,9 +162,9 @@ class Team {
                 });
 
                 if (uploadMedia.success) {
-                    newModel.photo = uploadMedia.link;
-                    newModel.photo_path = uploadMedia.path;
-                    newModel.photo_key = uploadMedia.key;
+                    newModel.image = uploadMedia.link;
+                    newModel.image_path = uploadMedia.path;
+                    newModel.image_key = uploadMedia.key;
                 }
             }
 
@@ -182,7 +176,7 @@ class Team {
                 save: async () => await result.save()
             }
         } catch (e) {
-            console.log("Team > create:", e)
+            console.log("Slider > create:", e)
             return {
                 success: false,
                 message: 'There was an error, please try again!',
@@ -221,15 +215,15 @@ class Team {
 
             // Delete the model
             await model.deleteOne({slug: model.slug});
-            await cloudinary.deleteFolder(`team/${model.slug}`);
+            await cloudinary.deleteFolder(`slider/${model.slug}`);
 
             return {
                 success: true,
-                message: 'Team has successfully been deleted',
+                message: 'Slider has successfully been deleted',
                 //investment: investment
             };
         } catch (e) {
-            console.log("Team > delete:", e)
+            console.log("Slider > delete:", e)
             return {
                 success: false,
                 message: 'There was an error, please try again!',
@@ -237,7 +231,7 @@ class Team {
         }
     }
 
-    async getTeam(data = this.props) {
+    async getSlider(data = this.props) {
         try {
             data = {...data};
 
@@ -283,7 +277,7 @@ class Team {
         }
     }
 
-    async getTeams(data = this.props) {
+    async getSliders(data = this.props) {
         try {
             data = {...data};
             data.limit = parseInt(data.limit) || 10;
@@ -417,4 +411,4 @@ class Team {
 }
 
 
-module.exports = Team
+module.exports = Slider

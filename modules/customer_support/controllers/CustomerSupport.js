@@ -8,7 +8,7 @@ const config = require("../../../lib/config");
 const mongoose = require("mongoose");
 const Notifications = require("../../notification/controllers/Notifications");
 const User = require("../../user/controllers/User");
-const TransactionModel = require("../../transaction/models/transactionModel");
+
 
 const cloudinary = require("../../../lib/cloudinary");
 

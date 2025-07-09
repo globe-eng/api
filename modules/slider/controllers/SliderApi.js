@@ -1,28 +1,28 @@
 
-const Team = require("./Team");
+const Slider = require("./Slider");
 
 
-exports.getTeam = async (req, res) => {
+exports.getSlider = async (req, res) => {
     try {
         const slug = req.params.slug;
         const query = req.query;
         let authUser = req.authUser;
 
-        const team = new Team(authUser);
-        const getTeam = await team.getTeam(query)
+        const slider = new Slider(authUser);
+        const getSlider = await slider.getSlider(query)
 
-        if(getTeam){
+        if(getSlider){
             return res.json({
                 success: true,
-                ...getTeam,
-                response: 'Team Found',
-                message: 'Team data retrieved successfully.'
+                ...getSlider,
+                response: 'Slider Found',
+                message: 'Slider data retrieved successfully.'
             });
         } else {
             return res.json({
                 success: false,
-                response: 'Team Not Found',
-                message: 'No team found with the provided information.'
+                response: 'Slider Not Found',
+                message: 'No slider found with the provided information.'
             });
         }
     } catch (e) {
@@ -35,20 +35,20 @@ exports.getTeam = async (req, res) => {
     }
 }
 
-exports.getTeams = async (req, res) => {
+exports.getSliders = async (req, res) => {
     try {
         const query = req.query;
         let authUser = req.authUser;
 
-        const team = new Team(query);
-        const getTeams = await team.getTeams(query)
-        return res.json(getTeams);
+        const slider = new Slider(query);
+        const getSliders = await slider.getSliders(query)
+        return res.json(getSliders);
     } catch (e) {
         return res.json([]);
     }
 }
 
-exports.createTeam = async (req, res) => {
+exports.createSlider = async (req, res) => {
     try {
         const slug = req.params.slug;
         const query = req.query;
@@ -58,14 +58,14 @@ exports.createTeam = async (req, res) => {
 
         body.files = files;
 
-        const team = new Team();
-        const result = await team.create(body)
+        const slider = new Slider();
+        const result = await slider.create(body)
 
         if(result.success){
             return res.json({
                 success: true,
-                response: 'Team Found',
-                message: 'Team Created successfully.'
+                response: 'Slider Found',
+                message: 'Slider Created successfully.'
             });
         } else {
             return res.json(result);
@@ -81,7 +81,7 @@ exports.createTeam = async (req, res) => {
     }
 }
 
-exports.updateTeam = async (req, res) => {
+exports.updateSlider = async (req, res) => {
     try {
         const slug = req.params.slug;
         const query = req.query;
@@ -91,20 +91,20 @@ exports.updateTeam = async (req, res) => {
 
         body.files = files;
 
-        const team = new Team();
-        const result = await team.update(body)
+        const slider = new Slider();
+        const result = await slider.update(body)
 
         if(result){
             return res.json({
                 success: true,
-                response: 'Team Found',
-                message: 'Team updated successfully.'
+                response: 'Slider Found',
+                message: 'Slider updated successfully.'
             });
         } else {
             return res.json({
                 success: false,
                 response: 'Error',
-                message: 'There was an error updating the team, please try again'
+                message: 'There was an error updating the slider, please try again'
             });
         }
 
@@ -118,27 +118,27 @@ exports.updateTeam = async (req, res) => {
     }
 }
 
-exports.deleteTeam = async (req, res) => {
+exports.deleteSlider = async (req, res) => {
     try {
         const slug = req.params.slug;
         const query = req.query;
         let body = req.body;
         let authUser = req.authUser;
 
-        const team = new Team();
-        const result = await team.delete(body)
+        const slider = new Slider();
+        const result = await slider.delete(body)
 
         if(result.success){
             return res.json({
                 success: true,
-                response: 'Team Found',
-                message: 'Team delete successfully.'
+                response: 'Slider Found',
+                message: 'Slider delete successfully.'
             });
         } else {
             return res.json({
                 success: false,
                 response: 'Error',
-                message: 'There was an error deleting the team, please try again',
+                message: 'There was an error deleting the slider, please try again',
                 ...result,
             });
         }

@@ -8,18 +8,16 @@ const options = {
     autoCreate: false,
     minimize: true, // "minimize" schemas by removing empty objects
     selectPopulatedPaths: true,
-    collection: "project"
+    collection: "sliders"
 }
 
 const schema = new mongoose.Schema({
     slug: {type: String, trim: true, required: true, unique: true, index: true},
-    name: {type: String, required: true},
-    type: {type: String, required: true},
-    content: {type: String},
-    client: {type: String},
-    budget: {type: String},
-    location: {type: String},
-    date: {type: String},
+    title: {type: String},
+    title2: {type: String},
+    description: {type: String},
+    btn_name: {type: String},
+    btn_link: {type: String},
     image: {type: String},
     image_key: {type: String},
     image_path: {type: String},

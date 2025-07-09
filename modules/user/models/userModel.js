@@ -50,32 +50,6 @@ const schema = new mongoose.Schema({
     document_back: {type: String},
     signature: {type: String},
 
-    // Balance
-    balance: {type: Number, default: 0},
-
-    // Affiliate
-    leader: { type: Number, default: 0},
-    leader_bonus: { type: Number, default: 0},
-    leader_upgraded_date: { type: Date},
-    affiliate_balance: {type: Number, default: 0},
-    affiliate_bonus: {type: Number, default: 0},
-    affiliate_commissions: {type: Number, default: 0},
-    personal_investment: { type: Number, default: 0},
-    personal_deposit: { type: Number, default: 0},
-    personal_withdrawal: { type: Number, default: 0},
-    personal_earnings: { type: Number, default: 0},
-    team_investment: { type: Number, default: 0},
-    team_deposit: { type: Number, default: 0},
-    team_deposit_leader1: { type: Number, default: 0},
-    team_deposit_leader2: { type: Number, default: 0},
-    team_deposit_leader3: { type: Number, default: 0},
-    team_deposit_level_milestone: {type: Number, default: 0},
-    team_deposit_level_total: {type: Number, default: 0},
-    affiliate_status: {type: String, enum: ['Pending', 'Approved', 'Suspended', 'None'], default: 'None'},
-    affiliate_partnership_approved_bonus: {type: Boolean, default: false},
-    ref_by: { type: mongoose.Schema.Types.ObjectId, ref: 'users'},
-
-
     // Location
     country: {type: String},
     state: {type: String},

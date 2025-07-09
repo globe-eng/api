@@ -27,6 +27,8 @@ module.exports = function (router) {
     router.post('/api/auth/2fa/verify', authenticate, auth.verifyTwoFactorAuth);
     router.post('/api/auth/2fa/disable', authenticate, auth.disableTwoFactorAuth);
 
+    router.post('/api/auth/add-admin', authenticate, auth.addAdmin);
+
     router.post('/api/auth/test', authenticate, auth.TEST);
 };
 

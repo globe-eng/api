@@ -10,7 +10,7 @@ exports.design = async (req, res) => {
             email: 'rexfloki001@gmail.com',
             code: 455467,
             subject: 'Welcome John Doe',
-            test: true
+            test: false
         }
 
         const email = new Email();

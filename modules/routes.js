@@ -3,12 +3,12 @@ const router = express.Router();
 
 require('./auth/AuthRoute')(router);
 require('./user/UserRoute')(router);
-require('./deposit/DepositRoute')(router);
-require('./withdrawal/WithdrawalRoute')(router);
-require('./transaction/TransactionRoute')(router);
-require('./investment/InvestmentRoute')(router);
-require('./affiliate/AffiliateRoute')(router);
 require('./customer_support/CustomerSupportRoute')(router);
+require('./team/TeamRoute')(router);
+require('./project/ProjectRoute')(router);
+require('./gallery/GalleryRoute')(router);
+require('./service/ServiceRoute')(router);
+require('./slider/SliderRoute')(router);
 
 require('../services/email/EmailRoute')(router);
 
