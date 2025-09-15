@@ -49,6 +49,7 @@ global.DB = mongoose.connection;
 const server = express();
 
 
+
 // Compression
 server.use(compression({ // Compression
     level: 6,
