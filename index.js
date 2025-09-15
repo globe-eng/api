@@ -45,9 +45,7 @@ mongoose.connection.once('open', () => {
 
 global.DB = mongoose.connection;
 
-
 const server = express();
-
 
 
 // Compression
@@ -63,7 +61,6 @@ server.use(compression({ // Compression
 })); // Compression
 
 
-
 //server.use(bodyParser.urlencoded({ extended: false }));
 server.use(bodyParser.json());
 server.use(formidable);
@@ -72,8 +69,21 @@ server.use(formidable);
 server.use(passport.initialize());
 require('./middleware/passport')(passport); // Passport Config
 
+// Cors
+server.use(cors({
+    origin: function (origin, callback) {
+        //console.log(origin)
+        if (config.origin.indexOf(origin) !== -1) {
+            callback(null, true)
+        } else {
+            callback(null, false)
+            //callback(new Error('Not allowed by CORS'))
+        }
+    },
+    //origin: config.origin,
+    credentials: true,
+}));
 
-server.use(cors())
 server.use(helmet());
 server.use(removeXPoweredBy());
 server.use(cookieParser());
