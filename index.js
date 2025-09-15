@@ -40,7 +40,7 @@ mongoose.connect(config.mongoURI, {
     retryWrites: false,
     connectTimeoutMS: 9999
 }).catch(error => {
-    //console.error('MongoDB Database connection failed - Retrying to connect...');
+    console.error('MongoDB Database connection failed - Retrying to connect...');
     //setTimeout(connectMongoDB, 5000);
 })
 
