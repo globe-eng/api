@@ -9,6 +9,8 @@ require('./project/ProjectRoute')(router);
 require('./gallery/GalleryRoute')(router);
 require('./service/ServiceRoute')(router);
 require('./slider/SliderRoute')(router);
+require('./blog/blogRoutes')(router);
+require('./testimonial/TestimonialRoute')(router);
 
 require('../services/email/EmailRoute')(router);
 

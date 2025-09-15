@@ -1,12 +1,11 @@
-const Model = require('../models/serviceModel');
-const TypeModel = require('../models/service_typeModel');
+const Model = require('../models/testimonialModel');
 const Utils = require("../../../lib/Utils")
 const config = require("../../../lib/config");
 const mongoose = require("mongoose");
 const cloudinary = require("../../../lib/cloudinary");
 
 
-class Service {
+class Testimonial {
     constructor(props = {}) {
         this.props = props;
         this.slug = props.slug;
@@ -43,32 +42,6 @@ class Service {
         }
 
         pipeline.push({
-            $lookup: {
-                from: "service_type",
-                let: {slugValue: "$type"},
-                pipeline: [
-                    {$match: {$expr: {$eq: ["$slug", "$$slugValue"]}}},
-                    {
-                        $project: {
-                            _id: 0,
-                            __v: 0,
-                            created_at: 0,
-                            updated_at: 0,
-                        }
-                    }
-                ],
-                as: "type"
-            }
-        });
-        pipeline.push({$addFields: {type: {$arrayElemAt: ["$type", 0]}}});
-
-        /* if(data.type){
-             pipeline.push({
-                 $match: {type: data.type}
-             });
-         }*/
-
-        pipeline.push({
             $sort: {created_at: -1}
         });
 
@@ -89,62 +62,91 @@ class Service {
     }
 
     async update(data = this.props) {
+        try {
 
-        data = {...data};
+            data = {...data};
+            const errors = {};
 
-        let _ids = [];
-        if (data?.slug) {
-            _ids.push({slug: data.slug.toLowerCase()});
-        }
-        if (data?._id) {
-            const idVal = data._id;
-            if (idVal instanceof mongoose.Types.ObjectId) {
-                _ids.push({_id: idVal});
-            } else if (mongoose.isValidObjectId(idVal)) {
-                _ids.push({_id: new mongoose.Types.ObjectId(idVal)});
+            if (Utils.isEmpty(data.slug)) {
+                errors.slug = 'Slug is required';
             }
-        }
 
-        if (!_ids.length) {
-            throw new Error('slug or _id is required');
-        }
+            if (Utils.isEmpty(data.name)) {
+                errors.name = 'Name is required';
+            }
 
-        const model = await Model.findOne({$or: _ids});
+            if (Utils.isEmpty(data.role)) {
+                errors.role = 'Role is required';
+            }
 
-        if (!model) {
-            throw new Error('Not found');
-        }
+            if (Utils.isEmpty(data.content)) {
+                errors.content = 'Content is required';
+            }
+
+            if (!data.star) {
+                errors.star = 'Star is required';
+            }
 
 
-        delete data.slug;
-        delete data._id;
+            if (!Utils.isEmpty(errors)) {
+                return {
+                    success: false,
+                    message: 'Please enter the required fields',
+                    errors: errors
+                };
+            }
 
-        for (let field in data) {
-            model[field] = data[field]
-        }
 
-        const folder = `/services/${model.slug}`
-        if (data?.files?.image_data) {
-            const file = data.files.image_data
-            const uploadMedia = await cloudinary.upload({
-                folder: folder,
-                media: file.filepath,
-                name: await Utils.createUniqueID(),
-            });
+            const model = await Model.findOne({slug: data.slug});
 
-            if (uploadMedia.success) {
+            if (!model) {
+                return {
+                    success: false,
+                    message: 'Not found',
+                };
+            }
 
-                if(model.image_key){
-                    await cloudinary.delete(model.image_key);
+            delete data.slug;
+            delete data._id;
+
+            for (let field in data) {
+                model[field] = data[field]
+            }
+
+            const folder = `/testimonials/${model.slug}`
+            if (data?.files?.image_data) {
+                const file = data.files.image_data
+                const uploadMedia = await cloudinary.upload({
+                    folder: folder,
+                    media: file.filepath,
+                    name: await Utils.createUniqueID(),
+                });
+
+                if (uploadMedia.success) {
+
+                    if(model.image_key){
+                        await cloudinary.delete(model.image_key);
+                    }
+
+                    model.image = uploadMedia.link;
+                    model.image_path = uploadMedia.path;
+                    model.image_key = uploadMedia.key;
                 }
-
-                model.image = uploadMedia.link;
-                model.image_path = uploadMedia.path;
-                model.image_key = uploadMedia.key;
             }
-        }
 
-        return await model.save();
+            await model.save();
+
+            return {
+                success: true,
+                message: 'Testimonial updated successfully',
+            };
+
+        } catch (e) {
+            return {
+                success: false,
+                message: 'There was an error, please try again!',
+            };
+        }
     }
 
     async create(data = this.props) {
@@ -156,9 +158,18 @@ class Service {
                 errors.name = 'Name is required';
             }
 
-            if (Utils.isEmpty(data.type)) {
-                errors.type = 'Type is required';
+            if (Utils.isEmpty(data.role)) {
+                errors.role = 'Role is required';
             }
+
+            if (Utils.isEmpty(data.content)) {
+                errors.content = 'Content is required';
+            }
+
+            if (!data.star) {
+                errors.star = 'Star is required';
+            }
+
 
             if (!Utils.isEmpty(errors)) {
                 return {
@@ -174,6 +185,23 @@ class Service {
             }
 
             newModel.slug = await Utils.createSlug(Model);
+
+            const folder = `/testimonials/${newModel.slug}`
+            if (data?.files?.image_data) {
+                const file = data.files.image_data
+                const uploadMedia = await cloudinary.upload({
+                    folder: folder,
+                    media: file.filepath,
+                    name: await Utils.createUniqueID(),
+                });
+
+                if (uploadMedia.success) {
+                    newModel.image = uploadMedia.link;
+                    newModel.image_path = uploadMedia.path;
+                    newModel.image_key = uploadMedia.key;
+                }
+            }
+
             const result = await newModel.save();
 
             return {
@@ -221,15 +249,15 @@ class Service {
 
             // Delete the model
             await model.deleteOne({slug: model.slug});
-            await cloudinary.deleteFolder(`services/${model.slug}`);
+            await cloudinary.deleteFolder(`testimonials/${model.slug}`);
 
             return {
                 success: true,
-                message: 'Service has successfully been deleted',
+                message: 'Testimonial has successfully been deleted',
                 //investment: investment
             };
         } catch (e) {
-            console.log("Service > delete:", e)
+            console.log("Testimonial > delete:", e)
             return {
                 success: false,
                 message: 'There was an error, please try again!',
@@ -237,7 +265,7 @@ class Service {
         }
     }
 
-    async getService(data = this.props) {
+    async getTestimonial(data = this.props) {
         try {
             data = {...data};
 
@@ -288,7 +316,7 @@ class Service {
         }
     }
 
-    async getServices(data = this.props) {
+    async getTestimonials(data = this.props) {
         try {
             data = {...data};
             data.limit = parseInt(data.limit) || 10;
@@ -301,7 +329,6 @@ class Service {
                     __v: 0,
                     created_at: 0,
                     updated_at: 0,
-                    content: 0,
                 }
             })
 
@@ -428,215 +455,6 @@ class Service {
         }
     }
 
-    async getServiceType(data = this.props) {
-        try {
-            data = {...data};
-
-            let ids = [];
-            if (data.slug) ids.push({slug: data.slug.toLowerCase()});
-            if (data._id) ids.push({_id: data._id});
-
-            if (ids.length === 0) {
-                return {
-                    success: false,
-                    message: 'Slug or _id is required',
-                }
-            }
-
-            const pipeline = [];
-
-            pipeline.push({
-                $match: {
-                    $or: ids
-                }
-            });
-
-            pipeline.push({
-                $project: {
-                    __v: 0,
-                    created_at: 0,
-                    updated_at: 0,
-                }
-            })
-
-            data.pipeline = pipeline;
-            const model = await TypeModel.aggregate(data.pipeline);
-
-            if (model[0]) {
-                return {
-                    success: true,
-                    ...model[0],
-                }
-            } else {
-                return {
-                    success: false,
-                    message: 'Not found',
-                }
-            }
-        } catch (e) {
-            //console.log(e)
-            return {
-                success: false,
-                message: 'There was an error, please try again!',
-            }
-        }
-    }
-
-    async getServiceTypes(data) {
-
-        const pipeline = [];
-
-        /* if(data.type){
-             pipeline.push({
-                 $match: {type: data.type}
-             });
-         }*/
-
-        pipeline.push({
-            $sort: {created_at: -1}
-        });
-
-        pipeline.push({
-            $project: {
-                _id: 0,
-                __v: 0,
-                created_at: 0,
-                updated_at: 0,
-            }
-        })
-
-        return TypeModel.aggregate(pipeline);
-    }
-
-    async createServiceType(data = this.props) {
-        try {
-            data = {...data};
-            const errors = {};
-
-            if (Utils.isEmpty(data.name)) {
-                errors.name = 'Name is required';
-            }
-
-            if (!Utils.isEmpty(errors)) {
-                return {
-                    success: false,
-                    message: 'Please enter the required fields',
-                    errors: errors
-                };
-            }
-
-            let newModel = new TypeModel()
-            for (let field in data) {
-                newModel[field] = data[field]
-            }
-
-            newModel.slug = await Utils.createSlug(TypeModel);
-            const result = await newModel.save();
-
-            return {
-                success: true,
-                ...result._doc,
-                save: async () => await result.save()
-            }
-        } catch (e) {
-            console.log("Service > createServiceType:", e)
-            return {
-                success: false,
-                message: 'There was an error, please try again!',
-            };
-        }
-    }
-
-    async updateServiceType(data = this.props) {
-        try {
-            data = {...data};
-
-            let _ids = [];
-            if (data?.slug) {
-                _ids.push({slug: data.slug.toLowerCase()});
-            }
-            if (data?._id) {
-                const idVal = data._id;
-                if (idVal instanceof mongoose.Types.ObjectId) {
-                    _ids.push({_id: idVal});
-                } else if (mongoose.isValidObjectId(idVal)) {
-                    _ids.push({_id: new mongoose.Types.ObjectId(idVal)});
-                }
-            }
-
-            if (!_ids.length) {
-                throw new Error('slug or _id is required');
-            }
-
-            const model = await TypeModel.findOne({$or: _ids});
-
-            if (!model) {
-                throw new Error('Not found');
-            }
-
-            delete data.slug;
-            delete data._id;
-
-            for (let field in data) {
-                model[field] = data[field]
-            }
-
-            return await model.save();
-        } catch (e) {
-            //console.log("Service > updateServiceType:", e)
-            return {
-                success: false,
-                message: 'There was an error, please try again!',
-            };
-        }
-    }
-
-    async deleteServiceType(data = this.props) {
-        try {
-            data = {...data};
-            const errors = {};
-
-            if (Utils.isEmpty(data.slug) && Utils.isEmpty(data._id)) {
-                errors.slug = 'Slug or _id is required';
-            }
-
-            if (!Utils.isEmpty(errors)) {
-                return {
-                    success: false,
-                    message: 'Please enter the required fields',
-                    errors: errors
-                };
-            }
-
-            const model = await TypeModel.findOne({
-                $or: [{slug: data.slug}, {_id: data._id}]
-            });
-
-            // Check if exists
-            if (!model) {
-                return {
-                    success: false,
-                    message: 'Not found',
-                };
-            }
-
-            // Delete the model
-            await model.deleteOne({slug: model.slug});
-
-            return {
-                success: true,
-                message: 'Service type has successfully been deleted',
-                //investment: investment
-            };
-        } catch (e) {
-            console.log("Service > deleteServiceType:", e)
-            return {
-                success: false,
-                message: 'There was an error, please try again!',
-            };
-        }
-    }
-
 }
 
-module.exports = Service
+module.exports = Testimonial

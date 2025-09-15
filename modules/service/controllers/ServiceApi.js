@@ -84,6 +84,8 @@ exports.updateService = async (req, res) => {
         let body = req.body;
         let authUser = req.authUser;
 
+        body.files = req.files;
+
         const service = new Service();
         const result = await service.update(body)
 
