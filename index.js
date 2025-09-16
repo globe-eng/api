@@ -22,6 +22,7 @@ const apiRoutes = require('./modules/routes');
 
 //const {createDefaultApp} = require("./modules/app/controllers/appApi");
 
+/*
 const originalEmitWarning = process.emitWarning;
 process.emitWarning = (warning, ...args) => {
     if (warning.includes('AWS SDK for JavaScript (v2)')) {
@@ -29,6 +30,7 @@ process.emitWarning = (warning, ...args) => {
     }
     originalEmitWarning.call(process, warning, ...args);
 };
+*/
 
 
 
