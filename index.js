@@ -22,6 +22,16 @@ const apiRoutes = require('./modules/routes');
 
 //const {createDefaultApp} = require("./modules/app/controllers/appApi");
 
+const originalEmitWarning = process.emitWarning;
+process.emitWarning = (warning, ...args) => {
+    if (warning.includes('AWS SDK for JavaScript (v2)')) {
+        return; // Ignore this specific warning
+    }
+    originalEmitWarning.call(process, warning, ...args);
+};
+
+
+
 const dev = process.env.NODE_ENV !== 'production';
 const port = process.env.PORT || config.port;
 
@@ -30,8 +40,8 @@ const port = process.env.PORT || config.port;
 // Database
 //Set up default mongoose connection
 mongoose.connect(config.mongoURI, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
+    //useNewUrlParser: true,
+    //useUnifiedTopology: true,
     retryWrites: false
 }).catch(error => {
     console.log(error)
